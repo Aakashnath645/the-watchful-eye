@@ -47,11 +47,14 @@ export default function Dashboard() {
   const [showOrbital, setShowOrbital] = useState(true);
   const [showGuide, setShowGuide] = useState(false);
   const [appReady, setAppReady] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
 
-  // Check sessionStorage after hydration to avoid mismatch
+  // Decide on mount: show loading animation (new visit) or skip it (return visit)
   useEffect(() => {
     if (sessionStorage.getItem("watchful-eye-loaded") === "true") {
       setAppReady(true);
+    } else {
+      setShowLoading(true);
     }
   }, []);
 
@@ -137,9 +140,10 @@ export default function Dashboard() {
   return (
     <>
       {/* ===== LOADING SCREEN ===== */}
-      {!appReady && <LoadingScreen onComplete={() => {
+      {showLoading && !appReady && <LoadingScreen onComplete={() => {
         sessionStorage.setItem("watchful-eye-loaded", "true");
         setAppReady(true);
+        setShowLoading(false);
       }} />}
 
       {/* ===== GUIDE OVERLAY ===== */}
